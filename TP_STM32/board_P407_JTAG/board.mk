@@ -1,5 +1,5 @@
 # List of all the board related files.
-BOARDSRC = ${CHIBIOS}/os/hal/boards/OLIMEX_STM32_P407/board.c
+BOARDSRC = ${CHIBIOS}/../TP_STM32/board_P407_JTAG/board.c
 
 # Required include directories
-BOARDINC = ${CHIBIOS}/os/hal/boards/OLIMEX_STM32_P407
+BOARDINC = ${CHIBIOS}/../TP_STM32/board_P407_JTAG
