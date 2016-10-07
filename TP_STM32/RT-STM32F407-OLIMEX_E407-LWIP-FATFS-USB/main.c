@@ -294,7 +294,7 @@ static THD_FUNCTION(Thread1, arg) {
   (void)arg;
   chRegSetThreadName("blinker");
   while (true) {
-    palTogglePad(GPIOC, GPIOC_SWITCH_TAMPER);
+    palTogglePad(GPIOF, GPIOF_STAT1);
     chThdSleepMilliseconds(fs_ready ? 125 : 500);
   }
 }
