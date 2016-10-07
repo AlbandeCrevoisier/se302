@@ -296,6 +296,13 @@ static THD_FUNCTION(Thread1, arg) {
   while (true) {
     palTogglePad(GPIOF, GPIOF_STAT1);
     chThdSleepMilliseconds(fs_ready ? 125 : 500);
+    palTogglePad(GPIOF, GPIOF_STAT1);
+    palTogglePad(GPIOF, GPIOF_STAT2);
+    chThdSleepMilliseconds(fs_ready ? 125 : 500);
+    palTogglePad(GPIOF, GPIOF_STAT2);
+    palTogglePad(GPIOF, GPIOF_STAT3);
+    chThdSleepMilliseconds(fs_ready ? 125 : 500);
+    palTogglePad(GPIOF, GPIOF_STAT3);
   }
 }
 
