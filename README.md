@@ -12,7 +12,7 @@
 
 * Turn on the LED
 	- [x] Turn on the green LED
-	- [ ] Turn on 4 LEDs in a trail
+	- [x] Turn on 4 LEDs in a trail
 	- [ ] Enable PWM use
 
 * Push button
