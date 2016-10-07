@@ -70,6 +70,30 @@ bool mmc_lld_is_write_protected(MMCDriver *mmcp) {
 }
 #endif
 
+#if HAL_USE_SDC || defined(__DOXYGEN__)
+/**
+ * @brief   SDC card detection.
+ */
+bool sdc_lld_is_card_inserted(SDCDriver *sdcp) {
+  static bool last_status = FALSE;
+  (void)sdcp;
+
+  if ((palReadLatch(GPIOD) & PAL_PORT_BIT(GPIOD_SPI3_CS)) == 0)
+    return last_status;
+  return last_status = (bool)palReadPad(GPIOD, GPIOD_SPI3_CS);
+}
+
+/**
+ * @brief   SDC card write protection detection.
+ */
+bool sdc_lld_is_write_protected(SDCDriver *sdcp) {
+
+  (void)sdcp;
+  /* TODO: Fill the implementation.*/
+  return TRUE;
+}
+#endif
+
 /*
  * Board-specific initialization code.
  */
