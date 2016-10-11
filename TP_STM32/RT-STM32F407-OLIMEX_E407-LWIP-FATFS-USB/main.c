@@ -295,15 +295,15 @@ static THD_FUNCTION(Thread1, arg) {
   chRegSetThreadName("blinker");
   while (true) {
     palTogglePad(GPIOF, GPIOF_STAT1);
-    chThdSleepMilliseconds(fs_ready ? 125 : 250);
+    chThdSleepMilliseconds(fs_ready ? 125 : 200);
     palTogglePad(GPIOF, GPIOF_STAT2);
-    chThdSleepMilliseconds(250);
+    chThdSleepMilliseconds(200);
     palTogglePad(GPIOF, GPIOF_STAT3);
     palTogglePad(GPIOF, GPIOF_STAT1);
-    chThdSleepMilliseconds(250);
+    chThdSleepMilliseconds(200);
     palTogglePad(GPIOF, GPIOF_CAM_PWR);
     palTogglePad(GPIOF, GPIOF_STAT2);
-    chThdSleepMilliseconds(250);
+    chThdSleepMilliseconds(200);
     palTogglePad(GPIOF, GPIOF_STAT3);
     chThdSleepMilliseconds(250);
     palTogglePad(GPIOF, GPIOF_CAM_PWR);
