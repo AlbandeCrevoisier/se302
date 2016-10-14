@@ -251,44 +251,47 @@ static const ShellConfig shell_cfg1 = {
 };
 
 /*===================================LED=====================================*/
-
 void
 toggle_led1(void)
 {
-  palTogglePad(GPIOF, GPIOF_STAT1);
+	palTogglePad(GPIOF, GPIOF_STAT1);
 }
 
 void
 toggle_led2(void)
 {
-  palTogglePad(GPIOF, GPIOF_STAT2);
+	palTogglePad(GPIOF, GPIOF_STAT2);
 }
 
 void
 toggle_led3(void)
 {
-  palTogglePad(GPIOF, GPIOF_STAT3);
+	palTogglePad(GPIOF, GPIOF_STAT3);
 }
 
 void
 toggle_led4(void)
 {
-  palTogglePad(GPIOF, GPIOF_CAM_PWR);
+	palTogglePad(GPIOF, GPIOF_CAM_PWR);
 }
-
+/* TODO: find PWM_OUTPUT_ACTIVE_HIGH possible values */
 /* PWM Config structure */
 static PWMConfig pwmcfg = {
-  20000,  /* frequency */
-  1000,  /* period */
-  NULL,  /* callback */
-  /* Use 4 channels: {mode, callback} */
-  {
-    {PWM_OUTPUT_ACTIVE_HIGH, toggle_led1},
-    {PWM_OUTPUT_ACTIVE_HIGH, toggle_led2},
-    {PWM_OUTPUT_ACTIVE_HIGH, toggle_led3},
-    {PWM_OUTPUT_ACTIVE_HIGH, toggle_led4}
-  }
+	20000,	/* frequency */
+	1000,	/* period */
+	NULL,	/* callback */
+	/* Use 4 channels: {mode, callback} */
+	{
+		{(uint32_t)PWM_OUTPUT_ACTIVE_HIGH, toggle_led1},
+		{(uint32_t)PWM_OUTPUT_ACTIVE_HIGH, toggle_led2},
+		{(uint32_t)PWM_OUTPUT_ACTIVE_HIGH, toggle_led3},
+		{(uint32_t)PWM_OUTPUT_ACTIVE_HIGH, toggle_led4}
+	},
+	0,
+	0,
+	0
 };
+
 /*===========================================================================*/
 /* Main and generic code.                                                    */
 /*===========================================================================*/
