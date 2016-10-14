@@ -250,6 +250,45 @@ static const ShellConfig shell_cfg1 = {
   commands
 };
 
+/*===================================LED=====================================*/
+
+void
+toggle_led1(void)
+{
+  palTogglePad(GPIOF, GPIOF_STAT1);
+}
+
+void
+toggle_led2(void)
+{
+  palTogglePad(GPIOF, GPIOF_STAT2);
+}
+
+void
+toggle_led3(void)
+{
+  palTogglePad(GPIOF, GPIOF_STAT3);
+}
+
+void
+toggle_led4(void)
+{
+  palTogglePad(GPIOF, GPIOF_CAM_PWR);
+}
+
+/* PWM Config structure */
+static PWMConfig pwmcfg = {
+  20000,  /* frequency */
+  1000,  /* period */
+  NULL,  /* callback */
+  /* Use 4 channels: {mode, callback} */
+  {
+    {PWM_OUTPUT_ACTIVE_HIGH, toggle_led1},
+    {PWM_OUTPUT_ACTIVE_HIGH, toggle_led2},
+    {PWM_OUTPUT_ACTIVE_HIGH, toggle_led3},
+    {PWM_OUTPUT_ACTIVE_HIGH, toggle_led4}
+  }
+};
 /*===========================================================================*/
 /* Main and generic code.                                                    */
 /*===========================================================================*/
@@ -294,19 +333,19 @@ static THD_FUNCTION(Thread1, arg) {
   (void)arg;
   chRegSetThreadName("blinker");
   while (true) {
-    palTogglePad(GPIOF, GPIOF_STAT1);
+    pwmEnableChannel(&PWMD1, 0, 512);
     chThdSleepMilliseconds(fs_ready ? 125 : 200);
-    palTogglePad(GPIOF, GPIOF_STAT2);
+    pwmEnableChannel(&PWMD1, 1, 512);
     chThdSleepMilliseconds(200);
-    palTogglePad(GPIOF, GPIOF_STAT3);
-    palTogglePad(GPIOF, GPIOF_STAT1);
+    pwmEnableChannel(&PWMD1, 2, 512);
+    pwmDisableChannel&PWMD1, 0);
     chThdSleepMilliseconds(200);
-    palTogglePad(GPIOF, GPIOF_CAM_PWR);
-    palTogglePad(GPIOF, GPIOF_STAT2);
+    pwmEnableChannel(&PWMD1, 3, 512);
+    pwmDisableChannel&PWMD1, 1);
     chThdSleepMilliseconds(200);
-    palTogglePad(GPIOF, GPIOF_STAT3);
+    pwmDisableChannel&PWMD1, 2);
     chThdSleepMilliseconds(250);
-    palTogglePad(GPIOF, GPIOF_CAM_PWR);
+    pwmDisableChannel&PWMD1, 3);
   }
 }
 
@@ -365,6 +404,13 @@ int main(void) {
    * Activates the card insertion monitor.
    */
   tmr_init(&SDCD1);
+
+  /* Start PWM Driver */
+  pwmStart(&PWMD1, &pwmcfg);
+  palSetPadMode(GPIOA, 5, PAL_MODE_ALTERNATE(2)); /* Channel 1 */
+  palSetPadMode(GPIOA, 6, PAL_MODE_ALTERNATE(2)); /* Channel 2 */
+  palSetPadMode(GPIOA, 7, PAL_MODE_ALTERNATE(2)); /* Channel 3 */
+  palSetPadMode(GPIOA, 8, PAL_MODE_ALTERNATE(2)); /* Channel 4 */
 
   /*
    * Creates the blinker thread.
