@@ -274,18 +274,18 @@ toggle_led4(void)
 {
 	palTogglePad(GPIOF, GPIOF_CAM_PWR);
 }
-/* TODO: find PWM_OUTPUT_ACTIVE_HIGH possible values */
+
 /* PWM Config structure */
 static PWMConfig pwmcfg = {
-	20000,	/* frequency */
+	200000,	/* frequency */
 	1000,	/* period */
 	NULL,	/* callback */
 	/* Use 4 channels: {mode, callback} */
 	{
-		{(uint32_t)PWM_OUTPUT_ACTIVE_HIGH, toggle_led1},
-		{(uint32_t)PWM_OUTPUT_ACTIVE_HIGH, toggle_led2},
-		{(uint32_t)PWM_OUTPUT_ACTIVE_HIGH, toggle_led3},
-		{(uint32_t)PWM_OUTPUT_ACTIVE_HIGH, toggle_led4}
+		{(pwmmode_t) PWM_OUTPUT_ACTIVE_HIGH, (pwmcallback_t) toggle_led1},
+		{(pwmmode_t) PWM_OUTPUT_ACTIVE_HIGH, (pwmcallback_t) toggle_led2},
+		{(pwmmode_t) PWM_OUTPUT_ACTIVE_HIGH, (pwmcallback_t) toggle_led3},
+		{(pwmmode_t) PWM_OUTPUT_ACTIVE_HIGH, (pwmcallback_t) toggle_led4}
 	},
 	0,
 	0,
@@ -341,14 +341,14 @@ static THD_FUNCTION(Thread1, arg) {
     pwmEnableChannel(&PWMD1, 1, 512);
     chThdSleepMilliseconds(200);
     pwmEnableChannel(&PWMD1, 2, 512);
-    pwmDisableChannel&PWMD1, 0);
+    pwmDisableChannel(&PWMD1, 0);
     chThdSleepMilliseconds(200);
     pwmEnableChannel(&PWMD1, 3, 512);
-    pwmDisableChannel&PWMD1, 1);
+    pwmDisableChannel(&PWMD1, 1);
     chThdSleepMilliseconds(200);
-    pwmDisableChannel&PWMD1, 2);
+    pwmDisableChannel(&PWMD1, 2);
     chThdSleepMilliseconds(250);
-    pwmDisableChannel&PWMD1, 3);
+    pwmDisableChannel(&PWMD1, 3);
   }
 }
 
