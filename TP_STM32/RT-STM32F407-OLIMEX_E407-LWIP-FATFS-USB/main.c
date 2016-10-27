@@ -252,6 +252,15 @@ static const ShellConfig shell_cfg1 = {
 
 /*===================================LED=====================================*/
 void
+toggle_leds(void)
+{
+	palTogglePad(GPIOF, GPIOF_STAT1);
+	palTogglePad(GPIOF, GPIOF_STAT2);
+	palTogglePad(GPIOF, GPIOF_STAT3);
+	palTogglePad(GPIOF, GPIOF_CAM_PWR);
+}
+
+void
 toggle_led1(void)
 {
 	palTogglePad(GPIOF, GPIOF_STAT1);
@@ -277,17 +286,16 @@ toggle_led4(void)
 
 /* PWM Config structure */
 static PWMConfig pwmcfg = {
-	200000,	/* frequency */
-	1000,	/* period */
-	NULL,	/* callback */
+	200000,			/* frequency: 200kHz */
+	1024,			/* period */
+	(pwmcallback_t) toggle_leds,	/* callback */
 	/* Use 4 channels: {mode, callback} */
 	{
-		{(pwmmode_t) PWM_OUTPUT_ACTIVE_HIGH, (pwmcallback_t) toggle_led1},
-		{(pwmmode_t) PWM_OUTPUT_ACTIVE_HIGH, (pwmcallback_t) toggle_led2},
-		{(pwmmode_t) PWM_OUTPUT_ACTIVE_HIGH, (pwmcallback_t) toggle_led3},
-		{(pwmmode_t) PWM_OUTPUT_ACTIVE_HIGH, (pwmcallback_t) toggle_led4}
+		{PWM_OUTPUT_ACTIVE_HIGH, (pwmcallback_t) toggle_led1},
+		{PWM_OUTPUT_ACTIVE_HIGH, (pwmcallback_t) toggle_led2},
+		{PWM_OUTPUT_ACTIVE_HIGH, (pwmcallback_t) toggle_led3},
+		{PWM_OUTPUT_ACTIVE_HIGH, (pwmcallback_t) toggle_led4}
 	},
-	0,
 	0,
 	0
 };
@@ -328,28 +336,40 @@ static void RemoveHandler(eventid_t id) {
 }
 
 /*
- * Green LED blinker thread, times are in milliseconds.
+ * LED blinker thread, times are in milliseconds.
  */
 static THD_WORKING_AREA(waThread1, 128);
 static THD_FUNCTION(Thread1, arg) {
 
-  (void)arg;
-  chRegSetThreadName("blinker");
-  while (true) {
-    pwmEnableChannel(&PWMD1, 0, 512);
-    chThdSleepMilliseconds(fs_ready ? 125 : 200);
-    pwmEnableChannel(&PWMD1, 1, 512);
-    chThdSleepMilliseconds(200);
-    pwmEnableChannel(&PWMD1, 2, 512);
-    pwmDisableChannel(&PWMD1, 0);
-    chThdSleepMilliseconds(200);
-    pwmEnableChannel(&PWMD1, 3, 512);
-    pwmDisableChannel(&PWMD1, 1);
-    chThdSleepMilliseconds(200);
-    pwmDisableChannel(&PWMD1, 2);
-    chThdSleepMilliseconds(250);
-    pwmDisableChannel(&PWMD1, 3);
-  }
+	(void)arg;
+	chRegSetThreadName("blinker");
+	while (true)
+	{
+		pwmEnableChannel(&PWMD1, 0, 0);
+		pwmEnableChannel(&PWMD1, 1, 0);
+		pwmEnableChannel(&PWMD1, 2, 0);
+		pwmEnableChannel(&PWMD1, 3, 0);
+
+		pwmEnableChannelNotification(&PWMD1, 0);
+		pwmEnableChannelNotification(&PWMD1, 1);
+		pwmEnableChannelNotification(&PWMD1, 2);
+		pwmEnableChannelNotification(&PWMD1, 3);
+
+		pwmEnableChannel(&PWMD1, 0, 256);
+		chThdSleepMilliseconds(fs_ready ? 125 : 200);
+		pwmEnableChannel(&PWMD1, 1, 256);
+		chThdSleepMilliseconds(fs_ready ? 125 : 200);
+		pwmEnableChannel(&PWMD1, 2, 256);
+		pwmEnableChannel(&PWMD1, 0, 0);
+		chThdSleepMilliseconds(fs_ready ? 125 : 200);
+		pwmEnableChannel(&PWMD1, 3, 256);
+		pwmEnableChannel(&PWMD1, 1, 0);
+		chThdSleepMilliseconds(fs_ready ? 125 : 200);
+		pwmEnableChannel(&PWMD1, 2, 0);
+		chThdSleepMilliseconds(fs_ready ? 125 : 200);
+		pwmEnableChannel(&PWMD1, 3, 0);
+
+	}
 }
 
 /*
@@ -410,10 +430,7 @@ int main(void) {
 
   /* Start PWM Driver */
   pwmStart(&PWMD1, &pwmcfg);
-  palSetPadMode(GPIOA, 5, PAL_MODE_ALTERNATE(2)); /* Channel 1 */
-  palSetPadMode(GPIOA, 6, PAL_MODE_ALTERNATE(2)); /* Channel 2 */
-  palSetPadMode(GPIOA, 7, PAL_MODE_ALTERNATE(2)); /* Channel 3 */
-  palSetPadMode(GPIOA, 8, PAL_MODE_ALTERNATE(2)); /* Channel 4 */
+  pwmEnablePeriodicNotification(&PWMD1);
 
   /*
    * Creates the blinker thread.
