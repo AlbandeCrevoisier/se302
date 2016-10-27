@@ -227,3 +227,6 @@ include $(RULESPATH)/rules.mk
 
 j:
 	JLinkGDBServer -if swd -device "STM32F407ZG" -LocalhostOnly
+
+g:
+	arm-none-eabi-gdb build/ch.elf
