@@ -258,7 +258,8 @@ static thread_reference_t wakup_thd_p = NULL;
 
 static THD_WORKING_AREA(wa_wakup_thd, 128);
 static THD_FUNCTION(wakup_thd, arg) {
-	int i = 0;
+	(void) arg;
+	pwm_wakup = 64;	/* low light PWM */
 	while (true) {
 		msg_t msg;
 
@@ -266,10 +267,9 @@ static THD_FUNCTION(wakup_thd, arg) {
 		msg = chThdSuspendS(&wakup_thd_p);
 		chSysUnlock();
 
-		i *= i;
-		if (i > 1024)
-			i = 64;
-		
+		pwm_wakup *= pwm_wakup;
+		if (pwm_wakup > 1024)
+			pwm_wakup = 64;
 		
 	}
 }
@@ -280,7 +280,7 @@ CH_IRQ_HANDLER(RTC_WAKUP)
 	CH_IRQ_PROLOGUE();
 
 	chSysLockFromISR();
-	chThdResumeI(&wakup_neo);
+	chThdResumeI(&wakup_thd_p, (msg_t) 0x42);
 
 	CH_IRQ_EPILOGUE();
 }
@@ -420,6 +420,11 @@ int main(void) {
    * Creates the blinker thread.
    */
   chThdCreateStatic(waThread1, sizeof(waThread1), NORMALPRIO, Thread1, NULL);
+
+  /*
+   * Create the Wakup button thread
+   */
+  chThdCreateStatic(wa_wakup_thd, sizeof(wa_wakup_thd), NORMALPRIO, wakup_thd, NULL);
 
   /*
    * Creates the HTTP thread (it changes priority internally).
