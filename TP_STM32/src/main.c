@@ -251,6 +251,40 @@ static const ShellConfig shell_cfg1 = {
   commands
 };
 
+/*================================ WAKUP NEO ================================*/
+static int pwm_wakup = 0;
+
+static thread_reference_t wakup_thd_p = NULL;
+
+static THD_WORKING_AREA(wa_wakup_thd, 128);
+static THD_FUNCTION(wakup_thd, arg) {
+	int i = 0;
+	while (true) {
+		msg_t msg;
+
+		chSysLock();
+		msg = chThdSuspendS(&wakup_thd_p);
+		chSysUnlock();
+
+		i *= i;
+		if (i > 1024)
+			i = 64;
+		
+		
+	}
+}
+
+
+CH_IRQ_HANDLER(RTC_WAKUP)
+{
+	CH_IRQ_PROLOGUE();
+
+	chSysLockFromISR();
+	chThdResumeI(&wakup_neo);
+
+	CH_IRQ_EPILOGUE();
+}
+
 /*===========================================================================*/
 /* Main and generic code.                                                    */
 /*===========================================================================*/
@@ -292,35 +326,34 @@ static void RemoveHandler(eventid_t id) {
 static THD_WORKING_AREA(waThread1, 128);
 static THD_FUNCTION(Thread1, arg) {
 
-	(void)arg;
-	chRegSetThreadName("blinker");
-	while (true)
-	{
-		pwmEnableChannel(&PWMD1, 0, 0);
-		pwmEnableChannel(&PWMD1, 1, 0);
-		pwmEnableChannel(&PWMD1, 2, 0);
-		pwmEnableChannel(&PWMD1, 3, 0);
+  (void)arg;
+  chRegSetThreadName("blinker");
+  while (true)
+  {
+    pwmEnableChannel(&PWMD1, 0, 0);
+    pwmEnableChannel(&PWMD1, 1, 0);
+    pwmEnableChannel(&PWMD1, 2, 0);
+    pwmEnableChannel(&PWMD1, 3, 0);
 
-		pwmEnableChannelNotification(&PWMD1, 0);
-		pwmEnableChannelNotification(&PWMD1, 1);
-		pwmEnableChannelNotification(&PWMD1, 2);
-		pwmEnableChannelNotification(&PWMD1, 3);
+    pwmEnableChannelNotification(&PWMD1, 0);
+    pwmEnableChannelNotification(&PWMD1, 1);
+    pwmEnableChannelNotification(&PWMD1, 2);
+    pwmEnableChannelNotification(&PWMD1, 3);
 
-		pwmEnableChannel(&PWMD1, 0, 256);
-		chThdSleepMilliseconds(fs_ready ? 125 : 200);
-		pwmEnableChannel(&PWMD1, 1, 256);
-		chThdSleepMilliseconds(fs_ready ? 125 : 200);
-		pwmEnableChannel(&PWMD1, 2, 256);
-		pwmEnableChannel(&PWMD1, 0, 0);
-		chThdSleepMilliseconds(fs_ready ? 125 : 200);
-		pwmEnableChannel(&PWMD1, 3, 256);
-		pwmEnableChannel(&PWMD1, 1, 0);
-		chThdSleepMilliseconds(fs_ready ? 125 : 200);
-		pwmEnableChannel(&PWMD1, 2, 0);
-		chThdSleepMilliseconds(fs_ready ? 125 : 200);
-		pwmEnableChannel(&PWMD1, 3, 0);
-
-	}
+    pwmEnableChannel(&PWMD1, 0, pwm_wakup);
+    chThdSleepMilliseconds(fs_ready ? 125 : 200);
+    pwmEnableChannel(&PWMD1, 1, 256);
+    chThdSleepMilliseconds(fs_ready ? 125 : 200);
+    pwmEnableChannel(&PWMD1, 2, 256);
+    pwmEnableChannel(&PWMD1, 0, 0);
+    chThdSleepMilliseconds(fs_ready ? 125 : 200);
+    pwmEnableChannel(&PWMD1, 3, 256);
+    pwmEnableChannel(&PWMD1, 1, 0);
+    chThdSleepMilliseconds(fs_ready ? 125 : 200);
+    pwmEnableChannel(&PWMD1, 2, 0);
+    chThdSleepMilliseconds(fs_ready ? 125 : 200);
+    pwmEnableChannel(&PWMD1, 3, 0);
+  }
 }
 
 /*
@@ -348,6 +381,7 @@ int main(void) {
 
   /*
    * Initializes a serial-over-USB CDC driver.
+   * cDc \o/ 
    */
   sduObjectInit(&SDU1);
   sduStart(&SDU1, &serusbcfg);

@@ -1,4 +1,5 @@
 /* PWM Configuration file */
+
 #include "hal.h"
 
 void
@@ -35,7 +36,7 @@ toggle_led4(void)
 }
 
 /* PWM Config structure */
-static PWMConfig pwmcfg = {
+static const PWMConfig pwmcfg = {
 	200000,			/* frequency: 200kHz */
 	1024,			/* period */
 	(pwmcallback_t) toggle_leds,	/* callback */
