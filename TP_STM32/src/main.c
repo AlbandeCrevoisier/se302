@@ -274,8 +274,7 @@ static THD_FUNCTION(wakup_thd, arg) {
 	}
 }
 
-
-CH_IRQ_HANDLER(RTC_WAKUP)
+CH_IRQ_HANDLER(RTC_WKUP_IRQHandler)
 {
 	CH_IRQ_PROLOGUE();
 
@@ -424,6 +423,7 @@ int main(void) {
   /*
    * Create the Wakup button thread
    */
+  nvicEnableVector(RTC_WKUP_IRQn, NVIC_PRIORITY_MASK(1));
   chThdCreateStatic(wa_wakup_thd, sizeof(wa_wakup_thd), NORMALPRIO, wakup_thd, NULL);
 
   /*
