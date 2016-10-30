@@ -80,8 +80,7 @@ main(void)
 	chThdCreateStatic(wa_wakup_thd, sizeof(wa_wakup_thd),
 		NORMALPRIO, wakup_thd, NULL);
 
-	while (true)
-		chThdSleepMilliseconds(500);
+	chThdSleep(TIME_INFINITE);
 
 	return 0;
 }
