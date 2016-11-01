@@ -4,8 +4,10 @@
 
 #include "hal.h"
 
-void ext_init(void);
-extern int pwm_wakup; /* Low light LED PWM */
+extern int pwm_wakup;
+extern int pwm_tamper;
 extern thread_reference_t trp;
+
+void ext_init(void);
 
 #endif /* EXTCFG_H */

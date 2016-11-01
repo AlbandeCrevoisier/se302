@@ -27,9 +27,10 @@ static THD_FUNCTION(blinker_thd, arg) {
 
 	while (true) {
 		pwmEnableChannel(&PWMD1, 0, pwm_wakup);
-		chThdSleepMilliseconds(500);
+		pwmEnableChannel(&PWMD1, 1, pwm_tamper);
+
 		chSysLock();
-		msg_t msg = chThdSuspendS(&trp);
+		chThdSuspendS(&trp);
 		chSysUnlock();
 	}
 }
