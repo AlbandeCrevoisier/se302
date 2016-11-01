@@ -10,7 +10,6 @@
 #include "extcfg.h"
 
 /* LED blinker thread */
-
 static THD_WORKING_AREA(blinker_thd_wa, 128);
 static THD_FUNCTION(blinker_thd, arg) {
 
@@ -28,11 +27,10 @@ static THD_FUNCTION(blinker_thd, arg) {
 
 	while (true) {
 		pwmEnableChannel(&PWMD1, 0, pwm_wakup);
+		chThdSleepMilliseconds(500);
 		chSysLock();
 		msg_t msg = chThdSuspendS(&trp);
 		chSysUnlock();
-		pwmEnableChannel(&PWMD1, 0, 0);
-		chThdSleepMilliseconds(500);
 	}
 }
 
