@@ -6,9 +6,13 @@
 #include "ch.h"
 #include "hal.h"
 
+#include "shell.h"
+#include "chprintf.h"
+
 #include "pwmcfg.h"
 #include "extcfg.h"
 #include "adccfg.h"
+#include "usbcfg.h"
 
 /* LED blinker thread */
 thread_reference_t trp = NULL;
