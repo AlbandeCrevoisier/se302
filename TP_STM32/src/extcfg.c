@@ -1,6 +1,6 @@
 /* EXT Driver configuration file */
 
-#include "extcfg.h"
+#include "hal.h"
 
 int pwm_wakup = 64; /* Low light LED PWM */
 int pwm_tamper = 64; /* Low light LED PWM */

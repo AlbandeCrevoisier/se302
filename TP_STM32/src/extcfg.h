@@ -2,8 +2,6 @@
 #ifndef EXTCFG_H
 #define EXTCFG_H
 
-#include "hal.h"
-
 extern int pwm_wakup;
 extern int pwm_tamper;
 extern thread_reference_t trp;
