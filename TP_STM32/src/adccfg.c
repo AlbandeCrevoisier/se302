@@ -2,20 +2,25 @@
 
 #include "ch.h"
 #include "hal.h"
+#include "adccfg.h"
 
 #define ADC_NUM_CHAN 1
-#define ADC_BUF_DEPTH 64
+#define ADC_BUF_DEPTH 2
 
-int pwm_trim = 64; /* Low light LED PWM */
+int trim = 0;
 static adcsample_t samples[ADC_NUM_CHAN * ADC_BUF_DEPTH];
 
 void
 adc_cb(ADCDriver *adcp, adcsample_t *buffer, size_t n)
 {
 	(void) adcp;
-	(void) buffer;
 	(void) n;
-	return; /* TODO */
+
+	trim = buffer[0];
+
+	chSysLockFromISR();
+	chThdResumeI(&trp, (msg_t)0x1337);
+	chSysUnlockFromISR();
 }
 
 static const ADCConversionGroup adc_cg = {

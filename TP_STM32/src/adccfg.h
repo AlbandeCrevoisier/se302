@@ -2,7 +2,8 @@
 #ifndef ADCCFG_H
 #define ADCCFG_H
 
-extern int pwm_trim;
+extern thread_reference_t trp;
+extern int trim;
 void adc_init(void);
 
 #endif /* ADCCFG_H */

@@ -11,6 +11,7 @@
 #include "adccfg.h"
 
 /* LED blinker thread */
+thread_reference_t trp = NULL;
 static THD_WORKING_AREA(blinker_thd_wa, 128);
 static THD_FUNCTION(blinker_thd, arg) {
 
@@ -29,7 +30,9 @@ static THD_FUNCTION(blinker_thd, arg) {
 	while (true) {
 		pwmEnableChannel(&PWMD1, 0, pwm_wakup);
 		pwmEnableChannel(&PWMD1, 1, pwm_tamper);
-		pwmEnableChannel(&PWMD1, 2, pwm_trim);
+		/* 12 bit trimmer resolution */
+		pwmEnableChannel(&PWMD1, 2,
+			PWM_PERCENTAGE_TO_WIDTH(&PWMD1, trim * 100 / 4096));
 
 		chSysLock();
 		chThdSuspendS(&trp);

@@ -1,10 +1,10 @@
 /* EXT Driver configuration file */
 
 #include "hal.h"
+#include "extcfg.h"
 
 int pwm_wakup = 64; /* Low light LED PWM */
 int pwm_tamper = 64; /* Low light LED PWM */
-thread_reference_t trp = NULL;
 
 void
 ext_wkup_cb(EXTDriver *extp, expchannel_t channel)
