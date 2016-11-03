@@ -38,4 +38,5 @@ thread_t*
 shell_spawn(void)
 {
 	return shellCreate(&shell_cfg, THD_WORKING_AREA_SIZE(2048), NORMALPRIO);
+
 }

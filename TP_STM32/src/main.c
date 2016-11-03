@@ -12,6 +12,9 @@
 #include "serialusbcfg.h"
 #include "shellcfg.h"
 
+#include "chprintf.h"
+#include "usbcfg.h"
+
 /* LED blinker thread */
 thread_reference_t trp = NULL;
 static THD_WORKING_AREA(blinker_thd_wa, 128);
@@ -50,7 +53,7 @@ main(void)
 	chSysInit();
 	pwm_init();
 	ext_init();
-	adc_init();
+
 	serial_usb_init();
 	shell_init();
 
