@@ -6,13 +6,11 @@
 #include "ch.h"
 #include "hal.h"
 
-#include "shell.h"
-#include "chprintf.h"
-
 #include "pwmcfg.h"
 #include "extcfg.h"
 #include "adccfg.h"
-#include "usbcfg.h"
+#include "serialusbcfg.h"
+#include "shellcfg.h"
 
 /* LED blinker thread */
 thread_reference_t trp = NULL;
@@ -53,11 +51,21 @@ main(void)
 	pwm_init();
 	ext_init();
 	adc_init();
+	serial_usb_init();
+	shell_init();
 
 	chThdCreateStatic(blinker_thd_wa, sizeof(blinker_thd_wa),
 		NORMALPRIO, blinker_thd, NULL);
 
-	chThdSleep(TIME_INFINITE);
+	while (true) {
+		if (!shell_p && (SDU1.config->usbp->state == USB_ACTIVE)) {
+			shell_p = shell_spawn();
+		} else if (chThdTerminatedX(shell_p)) {
+			chThdRelease(shell_p);
+			shell_p = NULL;
+		}
+		chThdSleepMilliseconds(1000);
+	}
 
 	return 0;
 }
