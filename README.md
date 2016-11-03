@@ -13,7 +13,11 @@
 * Turn on the LED
 	- [x] Turn on the green LED
 	- [x] Turn on 4 LEDs in a trail
-	- [ ] Enable PWM use
+	- [x] Enable PWM use
 
 * Push button
-	- [ ] Use the push button to set the intensity of a LED
+	- [x] Use the push button to set the intensity of a LED
+
+* Potentiometer
+	- [x] Use the potentiometetr to set the intensity of a LED
+
