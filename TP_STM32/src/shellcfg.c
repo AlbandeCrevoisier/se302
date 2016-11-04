@@ -23,9 +23,10 @@ static const ShellConfig shell_cfg = {
 static void
 cmd_p(BaseSequentialStream *ch_p, int argc, char *argv[])
 {
-	if (argc == 0)
-		return;
-	chprintf(ch_p, "%s", argv[1]);
+	(void) argc;
+	(void) argv;
+
+	chprintf(ch_p, "\\o/\r\n");
 }
 
 void
