@@ -12,8 +12,8 @@
 #include "serialusbcfg.h"
 #include "shellcfg.h"
 
-#include "chprintf.h"
-#include "usbcfg.h"
+#include "lwipopts.h"
+#include "web/web.h"
 
 /* LED blinker thread */
 thread_reference_t trp = NULL;
