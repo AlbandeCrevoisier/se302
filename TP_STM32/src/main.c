@@ -16,7 +16,8 @@
 /* LED blinker thread */
 thread_reference_t trp = NULL;
 static THD_WORKING_AREA(blinker_thd_wa, 128);
-static THD_FUNCTION(blinker_thd, arg) {
+static THD_FUNCTION(blinker_thd, arg)
+{
 
 	(void) arg;
 	chRegSetThreadName("blinker");
